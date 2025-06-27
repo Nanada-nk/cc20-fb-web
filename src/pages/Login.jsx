@@ -6,20 +6,31 @@ import { loginSchema } from '../utils/validators'
 
 import { FakebookTitle, FakebookLogo } from '../icons'
 import Register from './Register'
+import useUserStore from '../stores/userStore.js'
+import { toast } from 'react-toastify'
 
 function Login() {
 	const [resetForm, setResetForm] = useState(false)
+	const login = useUserStore(state => state.login)
+
+
 	const { handleSubmit, register, formState: { errors, isSubmitting }, reset } = useForm({
 		resolver: yupResolver(loginSchema),
 	})
 	const hdlClose = () => {
-		``
 		console.log('dialog close...')
 		setResetForm(prv => !prv)
 	}
 	const hdlLogin = async data => {
-		await new Promise(resolve => setTimeout(resolve, 2000))
-		alert(JSON.stringify(data, null, 2))
+		try {
+			await new Promise(resolve => setTimeout(resolve, 1000))
+			const resp = await login(data)
+			// toast.success(resp.data.message)
+			localStorage.setItem('user', JSON.stringify(resp.data.user))
+		} catch (err) {
+			const errMsg = err.response?.data?.error || err.message
+			toast(errMsg)
+		}
 	}
 
 	return (
@@ -27,7 +38,7 @@ function Login() {
 			<div className="h-[700px] pt-20 pb-28">
 				<div className="p-5 mx-auto max-w-screen-lg min-h-[540px] flex justify-between max-md:flex-col">
 					<div className='flex flex-col max-md:items-center max-md:text-center gap-4 mt-20 basis-3/5 '>
-						<div className="text-4xl"> <FakebookTitle /> </div>
+						<div className="text-4xl"> <FakebookTitle /></div>
 						<h2 className='text-[30px] max-md:text-[28px] leading-8 mt-3 w-[514px]'>
 							Fakebook helps you connect and share with people in your life.
 						</h2>
