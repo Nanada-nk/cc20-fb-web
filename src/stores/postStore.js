@@ -1,5 +1,5 @@
 import { create } from "zustand"
-import { createPost, deletePost, getAllPosts, updatePost } from "../api/postApi"
+import { createLike, createPost, deletePost, getAllPosts, unLike, updatePost } from "../api/postApi"
 import useUserStore from "./userStore"
 
 
@@ -15,9 +15,10 @@ const usePostStore = create((set, get) => ({
     console.log('resp', resp.data)
     console.log('resp.data.result', resp.data.result)
     // getAllPost
-    set({ loading: false })
+    // set({ loading: false })
     // get().getAllPosts() ทำแบบนี้ หรือแบบล่างก็ได้ แบบนี้จะช้าหน่อย แบบล่างจะเร็วกว่า
     set(state => ({
+      loading: false,
       posts: [{ ...resp.data.result, user, likes: [], comments: [] }, ...state.posts]
     }))
     return resp
@@ -33,15 +34,27 @@ const usePostStore = create((set, get) => ({
     return resp
   },
   deletePost: async (id) => {
-    let token = useUserStore.getState().token
+    const token = useUserStore.getState().token
     const resp = await deletePost(id, token)
     get().getAllPosts()
     return resp
   },
   setCurrentPost: (post) => set({ currentPost: post }),
   updatePost: async (id, body) => {
-    let token = useUserStore.getState().token
-    const resp = await updatePost(id,body ,token)
+    const token = useUserStore.getState().token
+    const resp = await updatePost(id, body, token)
+    get().getAllPosts()
+    return resp
+  },
+  createLike: async (body) => {
+    const token = useUserStore.getState().token
+    const resp = await createLike(body, token)
+    get().getAllPosts()
+    return resp
+  },
+  unLike: async (id) => {
+    const token = useUserStore.getState().token
+    const resp = await unLike(id, token)
     get().getAllPosts()
     return resp
   }
