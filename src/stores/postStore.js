@@ -1,5 +1,5 @@
 import { create } from "zustand"
-import { createPost, deletePost, getAllPosts } from "../api/postApi"
+import { createPost, deletePost, getAllPosts, updatePost } from "../api/postApi"
 import useUserStore from "./userStore"
 
 
@@ -18,7 +18,7 @@ const usePostStore = create((set, get) => ({
     set({ loading: false })
     // get().getAllPosts() ทำแบบนี้ หรือแบบล่างก็ได้ แบบนี้จะช้าหน่อย แบบล่างจะเร็วกว่า
     set(state => ({
-      posts: [{ ...resp.data.result, user, likes:[], comments:[] },...state.posts]
+      posts: [{ ...resp.data.result, user, likes: [], comments: [] }, ...state.posts]
     }))
     return resp
   },
@@ -32,13 +32,19 @@ const usePostStore = create((set, get) => ({
 
     return resp
   },
-  deletePost : async (id) => {
+  deletePost: async (id) => {
     let token = useUserStore.getState().token
-    const resp = await deletePost(id,token)
+    const resp = await deletePost(id, token)
     get().getAllPosts()
     return resp
   },
-  setCurrentPost : (post) => set({currentPost:post})
+  setCurrentPost: (post) => set({ currentPost: post }),
+  updatePost: async (id, body) => {
+    let token = useUserStore.getState().token
+    const resp = await updatePost(id,body ,token)
+    get().getAllPosts()
+    return resp
+  }
 }))
 
 export default usePostStore

@@ -15,3 +15,5 @@ export const createPost = (body, token) => postApi.post('/', body, addToken(toke
 export const getAllPosts = (token) => postApi.get('/',addToken(token))
 
 export const deletePost = (id,token) => postApi.delete(`/${id}`, addToken(token))
+
+export const updatePost = (id,body,token) => postApi.put(`/${id}`,body ,addToken(token))
