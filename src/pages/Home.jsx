@@ -1,12 +1,14 @@
 
+import PostContainer from '../components/PostContainer'
+import SidebarContact from '../components/SidebarContact'
 import SidebarMenu from '../components/SidebarMenu'
 
 function Home() {
 	return (
 		<>
 			<SidebarMenu />
-			{/* <div>Post Container</div>
-			<div>Sidebar Contact</div> */}
+			<PostContainer />
+			<SidebarContact/>
 		</>
 	)
 }
